@@ -43,6 +43,41 @@ uv run uvicorn {{ cookiecutter.project_slug }}.main:app --reload
 ```
 {% endif %}
 
+{% if cookiecutter.use_streamlit %}
+### Streamlit App
+
+```bash
+# Run Streamlit app
+just streamlit
+
+# Or directly:
+uv run streamlit run src/{{ cookiecutter.project_slug }}/streamlit/app.py
+
+# Access the app at http://localhost:8501
+```
+{% endif %}
+
+{% if cookiecutter.use_notebooks %}
+### Jupyter Notebooks
+
+```bash
+# Install notebook dependencies
+just install-dev
+
+# Start Jupyter Notebook
+just notebook
+
+# Or start Jupyter Lab
+just lab
+
+# Install kernel for this project
+just kernel-install
+
+# Or directly:
+uv run --extra notebook jupyter notebook notebooks/
+```
+{% endif %}
+
 ### Development
 
 ```bash
@@ -145,18 +180,24 @@ print(settings.database_url)
 {% if cookiecutter.app_type == 'cli' %}
 │       ├── __init__.py
 │       ├── cli.py           # CLI entry point
-│       └── core/
-│           └── config.py    # Dynaconf configuration
 {% elif cookiecutter.app_type == 'api' %}
 │       ├── __init__.py
 │       ├── main.py          # FastAPI application
 │       ├── api/
 │       │   └── routes.py    # API routes
+{% endif %}
+{% if cookiecutter.use_streamlit %}
+│       ├── streamlit/
+│       │   └── app.py       # Streamlit application
+{% endif %}
 │       └── core/
 │           └── config.py    # Dynaconf configuration
-{% endif %}
 ├── tests/
 │   └── ...
+{% if cookiecutter.use_notebooks %}
+├── notebooks/
+│   └── getting_started.ipynb
+{% endif %}
 ├── settings.toml            # Configuration file
 ├── .secrets.toml            # Secrets (not in git)
 ├── pyproject.toml

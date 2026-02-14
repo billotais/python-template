@@ -77,6 +77,30 @@ setup-hooks:
 pre-commit:
     uv run pre-commit run --all-files
 
+{% if cookiecutter.use_streamlit %}
+# Run Streamlit app
+streamlit:
+    uv run streamlit run src/{{ cookiecutter.project_slug }}/streamlit/app.py
+
+# Run Streamlit in headless mode (for servers)
+streamlit-headless:
+    uv run streamlit run src/{{ cookiecutter.project_slug }}/streamlit/app.py --server.headless true
+{% endif %}
+
+{% if cookiecutter.use_notebooks %}
+# Start Jupyter notebook server
+notebook:
+    uv run --extra notebook jupyter notebook notebooks/
+
+# Start Jupyter Lab
+lab:
+    uv run --extra notebook jupyter lab notebooks/
+
+# Install notebook kernel
+kernel-install:
+    uv run --extra notebook python -m ipykernel install --user --name {{ cookiecutter.project_slug }} --display-name "{{ cookiecutter.project_name }}"
+{% endif %}
+
 {% if cookiecutter.use_docker %}
 # Build Docker image
 docker-build:
@@ -86,6 +110,9 @@ docker-build:
 {% if cookiecutter.app_type == 'api' %}
 docker-run:
     docker run -p 8000:8000 {{ cookiecutter.project_slug }}:latest
+{% elif cookiecutter.use_streamlit %}
+docker-run:
+    docker run -p 8501:8501 {{ cookiecutter.project_slug }}:latest
 {% else %}
 docker-run *ARGS:
     docker run {{ cookiecutter.project_slug }}:latest {{ "{{ARGS}}" }}

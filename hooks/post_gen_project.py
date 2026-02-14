@@ -22,6 +22,8 @@ def main() -> None:
     app_type = "{{ cookiecutter.app_type }}"
     use_docker = "{{ cookiecutter.use_docker }}".lower() in ("true", "yes", "1")
     use_github_actions = "{{ cookiecutter.use_github_actions }}".lower() in ("true", "yes", "1")
+    use_notebooks = "{{ cookiecutter.use_notebooks }}".lower() in ("true", "yes", "1")
+    use_streamlit = "{{ cookiecutter.use_streamlit }}".lower() in ("true", "yes", "1")
     license_choice = "{{ cookiecutter.license }}"
 
     # Remove files based on app type
@@ -34,6 +36,15 @@ def main() -> None:
         # Remove CLI-related files
         remove_file("src/{{ cookiecutter.project_slug }}/cli.py")
         remove_file("tests/test_cli.py")
+
+    # Remove Streamlit files if not using Streamlit
+    if not use_streamlit:
+        remove_dir("src/{{ cookiecutter.project_slug }}/streamlit")
+        remove_file("tests/test_streamlit.py")
+
+    # Remove notebooks directory if not using notebooks
+    if not use_notebooks:
+        remove_dir("notebooks")
 
     # Remove Docker files if not using Docker
     if not use_docker:
@@ -62,8 +73,12 @@ def main() -> None:
     print("  just install-dev")
     if app_type == "cli":
         print("  just run --help")
-    else:
+    elif app_type == "api":
         print("  just run")
+    if use_streamlit:
+        print("  just streamlit")
+    if use_notebooks:
+        print("  just notebook")
     print("\nHappy coding!")
 
 

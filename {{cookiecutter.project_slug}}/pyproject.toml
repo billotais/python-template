@@ -14,20 +14,21 @@ classifiers = [
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: {{ cookiecutter.python_version }}",
 ]
-{% if cookiecutter.app_type == 'cli' %}
 dependencies = [
+    "dynaconf>=3.2.0",
+{% if cookiecutter.app_type == 'cli' %}
     "typer>=0.15.0",
     "rich>=13.9.0",
-    "dynaconf>=3.2.0",
-]
 {% elif cookiecutter.app_type == 'api' %}
-dependencies = [
     "fastapi>=0.115.0",
     "uvicorn[standard]>=0.34.0",
     "pydantic>=2.10.0",
-    "dynaconf>=3.2.0",
-]
 {% endif %}
+{% if cookiecutter.use_streamlit %}
+    "streamlit>=1.40.0",
+    "watchdog>=6.0.0",
+{% endif %}
+]
 
 [project.optional-dependencies]
 dev = [
@@ -39,6 +40,16 @@ dev = [
     "pre-commit>=4.0.0",
     "httpx>=0.28.0",
 ]
+{% if cookiecutter.use_notebooks %}
+notebook = [
+    "jupyter>=1.1.0",
+    "ipykernel>=6.29.0",
+    "nbformat>=5.10.0",
+    "matplotlib>=3.9.0",
+    "polars>=1.0.0",
+    "numpy>=2.0.0",
+]
+{% endif %}
 
 {% if cookiecutter.app_type == 'cli' %}
 [project.scripts]
