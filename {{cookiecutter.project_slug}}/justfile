@@ -1,0 +1,93 @@
+# Justfile for {{ cookiecutter.project_name }}
+# https://github.com/casey/just
+
+set dotenv-load := true
+
+# Default recipe - show available commands
+default:
+    @just --list
+
+# Install dependencies
+install:
+    uv sync
+
+# Install with dev dependencies
+install-dev:
+    uv sync --all-extras
+
+# Run the application
+{% if cookiecutter.app_type == 'cli' %}
+run *ARGS:
+    uv run {{ cookiecutter.project_slug }} {{ "{{ARGS}}" }}
+{% elif cookiecutter.app_type == 'api' %}
+run:
+    uv run uvicorn {{ cookiecutter.project_slug }}.main:app --reload --host 0.0.0.0 --port 8000
+
+# Run in production mode
+run-prod:
+    uv run uvicorn {{ cookiecutter.project_slug }}.main:app --host 0.0.0.0 --port 8000
+{% endif %}
+
+# Run tests
+test *ARGS:
+    uv run pytest {{ "{{ARGS}}" }}
+
+# Run tests with coverage
+test-cov:
+    uv run pytest --cov --cov-report=term-missing --cov-report=html
+
+# Lint code
+lint:
+    uv run ruff check src tests
+
+# Format code
+fmt:
+    uv run ruff format src tests
+    uv run ruff check --fix src tests
+
+# Type check
+typecheck:
+    uv run ty check src
+
+# Run all checks (lint, typecheck, test)
+check: lint typecheck test
+
+# Clean build artifacts
+clean:
+    rm -rf dist build *.egg-info .pytest_cache .coverage htmlcov .ruff_cache .ty_cache
+    find . -type d -name __pycache__ -exec rm -rf {} +
+
+# Build package
+build:
+    uv build
+
+# Lock dependencies
+lock:
+    uv lock
+
+# Update dependencies
+update:
+    uv lock --upgrade
+
+# Setup pre-commit hooks
+setup-hooks:
+    uv run pre-commit install
+
+# Run pre-commit on all files
+pre-commit:
+    uv run pre-commit run --all-files
+
+{% if cookiecutter.use_docker %}
+# Build Docker image
+docker-build:
+    docker build -t {{ cookiecutter.project_slug }}:latest .
+
+# Run Docker container
+{% if cookiecutter.app_type == 'api' %}
+docker-run:
+    docker run -p 8000:8000 {{ cookiecutter.project_slug }}:latest
+{% else %}
+docker-run *ARGS:
+    docker run {{ cookiecutter.project_slug }}:latest {{ "{{ARGS}}" }}
+{% endif %}
+{% endif %}

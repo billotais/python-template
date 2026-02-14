@@ -1,0 +1,41 @@
+# Settings for {{ cookiecutter.project_name }}
+# https://www.dynaconf.com/
+
+[default]
+# Application settings
+app_name = "{{ cookiecutter.project_name }}"
+debug = false
+
+{% if cookiecutter.app_type == 'api' %}
+# Server settings
+host = "0.0.0.0"
+port = 8000
+
+# CORS settings
+cors_origins = [
+    "http://localhost:3000",
+    "http://localhost:8000",
+]
+
+# Database settings (example)
+database_url = "sqlite:///./app.db"
+{% endif %}
+
+[development]
+debug = true
+{% if cookiecutter.app_type == 'api' %}
+cors_origins = ["*"]
+{% endif %}
+
+[production]
+debug = false
+{% if cookiecutter.app_type == 'api' %}
+# Override with environment variables in production
+# Example: export DYNACONF_DATABASE_URL="postgresql://..."
+{% endif %}
+
+[testing]
+debug = true
+{% if cookiecutter.app_type == 'api' %}
+database_url = "sqlite:///./test.db"
+{% endif %}
