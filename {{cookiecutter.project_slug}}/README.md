@@ -78,6 +78,12 @@ uv run --extra notebook jupyter notebook notebooks/
 ```
 {% endif %}
 
+{% if cookiecutter.app_type == 'api' %}
+### API Collection
+
+This project includes a [Bruno](https://www.usebruno.com/) API collection in the `bruno/` directory for testing and exploring the API endpoints. Open the collection in Bruno or any compatible client.
+{% endif %}
+
 ### Development
 
 ```bash
@@ -190,6 +196,8 @@ print(settings.database_url)
 │       ├── streamlit/
 │       │   └── app.py       # Streamlit application
 {% endif %}
+│       ├── utils/
+│       │   └── helpers.py   # Helper functions
 │       └── core/
 │           └── config.py    # Dynaconf configuration
 ├── tests/
@@ -205,6 +213,8 @@ print(settings.database_url)
 └── README.md
 ```
 
+{% if cookiecutter.license != "None" %}
 ## License
 
 {{ cookiecutter.license }}
+{% endif %}

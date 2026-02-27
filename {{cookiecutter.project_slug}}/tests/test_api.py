@@ -52,7 +52,7 @@ async def test_get_item(client: AsyncClient) -> None:
 
 async def test_create_item(client: AsyncClient) -> None:
     """Test create item endpoint."""
-    response = await client.post("/api/v1/items?name=TestItem")
-    assert response.status_code == 200
+    response = await client.post("/api/v1/items", json={"name": "TestItem"})
+    assert response.status_code == 201
     data = response.json()
     assert data["name"] == "TestItem"

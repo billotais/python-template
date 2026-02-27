@@ -1,8 +1,15 @@
 """API routes."""
 
 from fastapi import APIRouter
+from pydantic import BaseModel
 
 router = APIRouter()
+
+
+class ItemCreate(BaseModel):
+    """Request body for creating an item."""
+
+    name: str
 
 
 @router.get("/items")
@@ -17,7 +24,7 @@ async def get_item(item_id: int) -> dict[str, int | str]:
     return {"id": item_id, "name": f"Item {item_id}"}
 
 
-@router.post("/items")
-async def create_item(name: str) -> dict[str, int | str]:
+@router.post("/items", status_code=201)
+async def create_item(item: ItemCreate) -> dict[str, int | str]:
     """Create a new item."""
-    return {"id": 1, "name": name}
+    return {"id": 1, "name": item.name}

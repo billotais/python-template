@@ -3,6 +3,7 @@
 
 import os
 import shutil
+import subprocess
 
 PROJECT_DIRECTORY = os.path.realpath(os.path.curdir)
 
@@ -32,6 +33,7 @@ def main() -> None:
         remove_file("src/{{ cookiecutter.project_slug }}/main.py")
         remove_dir("src/{{ cookiecutter.project_slug }}/api")
         remove_file("tests/test_api.py")
+        remove_dir("bruno")
     elif app_type == "api":
         # Remove CLI-related files
         remove_file("src/{{ cookiecutter.project_slug }}/cli.py")
@@ -49,6 +51,7 @@ def main() -> None:
     # Remove Docker files if not using Docker
     if not use_docker:
         remove_file("Dockerfile")
+        remove_file(".dockerignore")
 
     # Remove GitHub Actions if not using them
     if not use_github_actions:
@@ -62,14 +65,21 @@ def main() -> None:
             os.remove(license_path)
 
     # Initialize git repository
-    os.system("git init")
-    os.system("git add .")
+    git_ok = False
+    try:
+        subprocess.run(["git", "init"], check=True, capture_output=True)
+        subprocess.run(["git", "add", "."], check=True, capture_output=True)
+        git_ok = True
+    except (subprocess.CalledProcessError, FileNotFoundError):
+        print("\nWarning: git initialization failed (is git installed?)")
 
     print("\n" + "=" * 50)
     print("Project '{{ cookiecutter.project_name }}' created successfully!")
     print("=" * 50)
     print("\nNext steps:")
     print("  cd {{ cookiecutter.project_slug }}")
+    if not git_ok:
+        print("  git init  # (optional, auto-init failed)")
     print("  just install-dev")
     if app_type == "cli":
         print("  just run --help")

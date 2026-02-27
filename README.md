@@ -51,6 +51,8 @@ cookiecutter /path/to/python-template
 | `app_type` | cli | Choose: `cli` or `api` |
 | `use_docker` | true | Include Dockerfile |
 | `use_github_actions` | true | Include CI workflow |
+| `use_notebooks` | false | Include Jupyter notebooks |
+| `use_streamlit` | false | Include Streamlit dashboard |
 | `license` | MIT | Choose license |
 
 ## Generated Project Structure
@@ -61,7 +63,9 @@ my_project/
 ├── src/
 │   └── my_project/
 │       ├── __init__.py
-│       └── cli.py
+│       ├── cli.py
+│       └── utils/
+│           └── helpers.py
 ├── tests/
 │   └── test_cli.py
 ├── .github/
@@ -84,13 +88,25 @@ my_project/
 │       ├── main.py
 │       ├── api/
 │       │   └── routes.py
-│       └── core/
-│           └── config.py
+│       ├── core/
+│       │   └── config.py
+│       └── utils/
+│           └── helpers.py
 ├── tests/
 │   └── test_api.py
 ├── .github/
 │   └── workflows/
 │       └── ci.yml
+├── bruno/
+│   ├── bruno.json
+│   ├── environments/
+│   │   └── Local.bru
+│   ├── Root.bru
+│   ├── Health.bru
+│   └── items/
+│       ├── List Items.bru
+│       ├── Get Item.bru
+│       └── Create Item.bru
 ├── .gitignore
 ├── .env.example
 ├── .pre-commit-config.yaml

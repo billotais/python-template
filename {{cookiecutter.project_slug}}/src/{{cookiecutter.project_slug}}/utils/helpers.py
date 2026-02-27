@@ -1,5 +1,7 @@
 """Helper functions for {{ cookiecutter.project_name }}."""
 
+import random
+
 from {{ cookiecutter.project_slug }}.core.config import settings
 
 
@@ -29,8 +31,6 @@ def generate_sample_data(n_rows: int = 10, seed: int = 42) -> dict[str, list]:
     Returns:
         Dictionary with sample data columns.
     """
-    import random
-
     random.seed(seed)
 
     categories = ["A", "B", "C"]

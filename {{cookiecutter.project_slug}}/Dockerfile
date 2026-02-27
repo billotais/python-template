@@ -56,6 +56,14 @@ HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
 # Run the application
 CMD ["uvicorn", "{{ cookiecutter.project_slug }}.main:app", "--host", "0.0.0.0", "--port", "8000"]
 {% elif cookiecutter.app_type == 'cli' %}
+{% if cookiecutter.use_streamlit %}
+# Expose Streamlit port
+EXPOSE 8501
+
+# Run Streamlit
+CMD ["streamlit", "run", "src/{{ cookiecutter.project_slug }}/streamlit/app.py", "--server.headless", "true"]
+{% else %}
 # Run the CLI
 ENTRYPOINT ["{{ cookiecutter.project_slug }}"]
+{% endif %}
 {% endif %}

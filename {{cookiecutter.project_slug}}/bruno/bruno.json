@@ -1,0 +1,5 @@
+{
+  "version": "1",
+  "name": "{{ cookiecutter.project_name }}",
+  "type": "collection"
+}
